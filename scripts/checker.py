@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from sklearn.model_selection import train_test_split
 
 DATASET_PATH = Path("data/vedaz_astrologer_finetune.jsonl")
 
@@ -130,10 +131,9 @@ def main():
     print(f"Total Chats : {len(chats)}")
     print()
 
-    valid = 0
-    invalid = 0
-    unsafe = 0
-
+    valid_chats = []
+    invalid_chats = []
+    unsafe_chats = []
     word_counts = []
 
     for index, chat in enumerate(chats, start=1):
@@ -145,12 +145,8 @@ def main():
 
         if validate_structure(chat):
 
-            valid += 1
-
             if violations:
-
-                unsafe += 1
-
+                unsafe_chats.append(chat)
                 print(
                     f"Chat {index:02d} | "
                     f"{words:4d} words | "
@@ -159,7 +155,7 @@ def main():
                 )
 
             else:
-
+                valid_chats.append(chat)
                 print(
                     f"Chat {index:02d} | "
                     f"{words:4d} words | "
@@ -167,9 +163,7 @@ def main():
                 )
 
         else:
-
-            invalid += 1
-
+            invalid_chats.append(chat)
             print(
                 f"Chat {index:02d} | "
                 f"{words:4d} words | "
@@ -179,16 +173,38 @@ def main():
     print()
     print("=" * 70)
 
-    print(f"Valid Chats      : {valid}")
-    print(f"Invalid Chats    : {invalid}")
-    print(f"Unsafe Chats     : {unsafe}")
+    print(f"Valid Chats      : {len(valid_chats)}")
+    print(f"Invalid Chats    : {len(invalid_chats)}")
+    print(f"Unsafe Chats     : {len(unsafe_chats)}")
 
     print()
 
     print(f"Average Words    : {sum(word_counts)/len(word_counts):.2f}")
     print(f"Shortest Chat    : {min(word_counts)} words")
     print(f"Longest Chat     : {max(word_counts)} words")
+    
+    print("=" * 70)
 
+    # =====================================================
+    # ✅ FIX: Train/Test Split and Save files (Added as required)
+    # =====================================================
+    if len(valid_chats) > 0:
+        train_chats, test_chats = train_test_split(valid_chats, test_size=0.2, random_state=42)
+        
+        with open("train.jsonl", "w", encoding="utf-8") as f:
+            for c in train_chats:
+                f.write(json.dumps(c, ensure_ascii=False) + "\n")
+                
+        with open("test.jsonl", "w", encoding="utf-8") as f:
+            for c in test_chats:
+                f.write(json.dumps(c, ensure_ascii=False) + "\n")
+
+        print(f"\n✅ Train/Test Split Complete:")
+        print(f"   Training set   : {len(train_chats)} chats → saved to train.jsonl")
+        print(f"   Test set       : {len(test_chats)} chats → saved to test.jsonl")
+    else:
+        print("\n⚠️ No valid chats found to split.")
+        
     print("=" * 70)
 
 
