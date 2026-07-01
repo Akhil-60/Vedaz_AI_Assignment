@@ -10,6 +10,13 @@ It consists of three major modules:
 
 ---
 
+## 🚀 Live Demo
+
+> Try the deployed app here:
+> **[https://vedazaiassignment-j6skspn3qxk2jigu49polu.streamlit.app/](https://vedazaiassignment-j6skspn3qxk2jigu49polu.streamlit.app/)**
+
+---
+
 ## Project Structure
 
 ```
