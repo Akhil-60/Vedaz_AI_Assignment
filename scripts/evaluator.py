@@ -13,26 +13,22 @@ from openai import OpenAI
 
 load_dotenv()
 
-API_KEY = os.getenv("OPENROUTER_API_KEY")
+API_KEY = os.getenv("GROQ_API_KEY")
 
 if not API_KEY:
-    raise ValueError("OPENROUTER_API_KEY not found.")
+    raise ValueError("GROQ_API_KEY not found in .env file.")
 
 client = OpenAI(
     api_key=API_KEY,
-    base_url="https://openrouter.ai/api/v1"
+    base_url="https://api.groq.com/openai/v1"
 )
 
 # =====================================================
 # Models
 # =====================================================
 
-MODELS = [
-    "google/gemma-4-31b-it:free",
-    "qwen/qwen3-next-80b-a3b-instruct:free",
-    "meta-llama/llama-3.3-70b-instruct:free"
-]
-
+# Groq's free and fast model
+MODELS = ["llama-3.3-70b-versatile"]
 # =====================================================
 # Questions
 # =====================================================
