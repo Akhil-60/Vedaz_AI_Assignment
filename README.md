@@ -15,27 +15,27 @@ It consists of three major modules:
 ```
 Vedaz_Assignment/
 │
-├── app.py                          # Streamlit Dashboard to view results
+├── app.py                                  # Streamlit Live Chat & Dashboard
 ├── README.md
 ├── requirements.txt
 ├── .env.example
 │
 ├── data/
-│   ├── vedaz_astrologer_finetune.jsonl   # Original 15 example chats
-│   ├── generated_chats.jsonl             # 10 newly generated chats (Task 2)
-│   ├── train.jsonl                       # Training split (from checker)
-│   └── test.jsonl                        # Test split (from checker)
+│   ├── vedaz_astrologer_finetune.jsonl     # Original 15 example chats
+│   ├── generated_chats.jsonl               # 10 newly generated chats (Task 2)
+│   ├── train.jsonl                         # Training split (from checker)
+│   └── test.jsonl                          # Test split (from checker)
 │
 ├── outputs/
-│   └── evaluation.csv              # AI Judge scores (Safety, Warmth, Honesty, Helpfulness)
+│   └── evaluation.csv                      # AI Judge scores (Safety, Warmth, Honesty, Helpfulness)
 │
 ├── scripts/
-│   ├── checker.py                  # Task 1: Validator & Safety Checker
-│   ├── generator.py                # Task 2: Chat Generator using API
-│   └── evaluator.py                # Task 3: Quality Evaluator using API
+│   ├── checker.py                          # Task 1: Validator & Safety Checker
+│   ├── generator.py                        # Task 2: Chat Generator using API
+│   └── evaluator.py                        # Task 3: Quality Evaluator using API
 │
-├── review_report.md                # Stage 1: Review of the 15 examples
-└── new_chats.jsonl                 # Stage 1: 5 manually curated new chats
+├── review_report.md                        # Stage 1: Review of the 15 examples
+└── new_chats.jsonl                         # Stage 1: 5 manually curated new chats
 ```
 
 ---
@@ -50,7 +50,7 @@ Vedaz_Assignment/
 - Train/Test split (80/20 ratio) saving to `train.jsonl` and `test.jsonl`
 
 ### ✅ Chat Generator (`generator.py`)
-- Connects to OpenRouter API
+- Connects to **Groq API** using the OpenAI SDK
 - Uses dynamic topics to generate diverse, safe astrology conversations
 - Automatically validates output JSON format
 - Outputs to `data/generated_chats.jsonl`
@@ -64,9 +64,9 @@ Vedaz_Assignment/
   - Helpfulness (1-10)
 - Exports results to `outputs/evaluation.csv`
 
-### ✅ Streamlit Dashboard (`app.py`)
-- Reads `outputs/evaluation.csv`
-- Displays a clean, professional results table
+### ✅ Streamlit Dashboard & Live Chat (`app.py`)
+- Provides a live chat interface to talk to the AI Astrologer
+- Displays a clean, professional evaluation results table in the sidebar
 
 ---
 
@@ -97,10 +97,11 @@ pip install -r requirements.txt
 
 ## Environment Variables
 
-Create a `.env` file in the root directory and add your OpenRouter API key:
+Create a `.env` file in the root directory and add your Groq API key:
 ```env
-OPENROUTER_API_KEY=your_api_key_here
+GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
 ```
+Get your free API key from [console.groq.com](https://console.groq.com)
 
 ---
 
@@ -116,7 +117,7 @@ Outputs: `data/train.jsonl`, `data/test.jsonl`, and a console validation report.
 ```bash
 python scripts/generator.py
 ```
-Outputs: `data/generated_chats.jsonl`
+Outputs: `data/generated_chats.jsonl` (10 new safe chats)
 
 ### 3. Run the Chat Evaluator
 ```bash
@@ -124,7 +125,7 @@ python scripts/evaluator.py
 ```
 Outputs: `outputs/evaluation.csv`
 
-### 4. Launch the Streamlit Dashboard
+### 4. Launch the Streamlit Dashboard & Live Chat
 ```bash
 streamlit run app.py
 ```
@@ -132,21 +133,22 @@ Access the dashboard at: http://localhost:8501
 
 ---
 
-## ⚠️ Important Note on OpenRouter Free Tier
+## ⚠️ Important Note on API Usage
 
-The `generator.py` and `evaluator.py` scripts rely on OpenRouter's free models. These free models have a strict daily rate limit of 50 requests per day (Error 429).
+All API-based scripts (`generator.py`, `evaluator.py`, and `app.py`) use Groq's high-speed inference API with the `llama-3.3-70b-versatile` model.
 
-If you encounter a `429 Rate Limit Exceeded` error:
-- Wait 24 hours for the limit to reset.
-- Or, add credits to your OpenRouter account to increase the request quota.
+Groq's Free Tier is very generous:
+- Provides thousands of requests per day (30 requests per minute)
+- No strict daily token limit, making it perfect for assignments and demos
+- The project no longer relies on OpenRouter's 50 requests/day limit
 
-**Note:** The submission includes pre-generated files (`data/generated_chats.jsonl` and `outputs/evaluation.csv`) so the API limit does not block the project evaluation.
+The repository includes pre-generated files (`data/generated_chats.jsonl` and `outputs/evaluation.csv`) so the project works even if you don't have an API key immediately.
 
 ---
 
 ## Technologies Used
 - Python 3.10+
-- OpenRouter AI API (LLM integration)
+- Groq API (High-speed LLM inference)
 - OpenAI SDK (API client)
 - Streamlit (Dashboard UI)
 - Pandas (Data manipulation)
@@ -157,11 +159,11 @@ If you encounter a `429 Rate Limit Exceeded` error:
 ---
 
 ## Output Files
-- `data/generated_chats.jsonl` – Generated training examples.
-- `data/train.jsonl` / `test.jsonl` – Split datasets.
-- `outputs/evaluation.csv` – Final scores and metrics.
-- `review_report.md` – Stage 1 review document.
-- `new_chats.jsonl` – Stage 1 manual examples.
+- `data/generated_chats.jsonl` – Generated training examples
+- `data/train.jsonl` / `test.jsonl` – Split datasets
+- `outputs/evaluation.csv` – Final scores and metrics
+- `review_report.md` – Stage 1 review document
+- `new_chats.jsonl` – Stage 1 manual examples
 
 ---
 
